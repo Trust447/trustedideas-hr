@@ -414,11 +414,11 @@ export default function ReportsPage() {
   const activeInfo  = MODULES.find((m) => m.id === activeModule);
 
   const handleExportPDF = useCallback(() => {
-    if (!reportData) { toast.error('No data to export'); return; }
-    setExporting(true);
+  if (!reportData) { toast.error('No data to export'); return; }
+  setExporting(true);
     try {
       exportReportPDF(activeModule, reportData, {
-        company:     user?.company_name ?? 'Trusted Ideas HR',
+        company: user?.company_name ?? 'Zenith Forge Ltd',
         dateRange:   dateRange.label,
         generatedBy: `${user?.first_name ?? ''} ${user?.last_name ?? ''}`.trim(),
       });

@@ -31,6 +31,7 @@ export default function AppShell({ currentPage, onNavigate, children }) {
         <Header
           currentPage={currentPage}
           onMenuToggle={() => setSidebarOpen((o) => !o)}
+          onNavigate={onNavigate}
         />
         <main style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
           {children}

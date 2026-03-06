@@ -14,11 +14,13 @@ import EmployeeModal from './EmployeeModal.jsx';
 
 export default function EmployeesPage() {
   const { toast } = useToast();
-  const [searchInput, setSearchInput] = useState('');
-  const [search,      setSearch]      = useState('');
-  const [deptFilter,  setDeptFilter]  = useState('all');
-  const [modalOpen,   setModalOpen]   = useState(false);
-  const [selected,    setSelected]    = useState(null);
+  const _initial = window.__globalSearch ?? '';
+  if (window.__globalSearch) window.__globalSearch = null;
+  const [searchInput, setSearchInput] = useState(_initial);
+  const [search, setSearch] = useState(_initial);
+  const [deptFilter, setDeptFilter] = useState('all');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selected, setSelected] = useState(null);
 
   const { data: employees, meta, loading, error, page, setPage, refetch } = useApi(
     employeesApi.list,
@@ -32,7 +34,7 @@ export default function EmployeesPage() {
     (id) => employeesApi.delete(id),
     {
       onSuccess: () => { toast.success('Employee removed'); refetch(); },
-      onError:   (msg) => toast.error(msg),
+      onError: (msg) => toast.error(msg),
     }
   );
 
@@ -43,8 +45,8 @@ export default function EmployeesPage() {
     try { await deleteEmployee(emp.id); } catch { /* handled */ }
   };
 
-  const openAdd  = () => { setSelected(null); setModalOpen(true); };
-  const openEdit = (e) => { setSelected(e);   setModalOpen(true); };
+  const openAdd = () => { setSelected(null); setModalOpen(true); };
+  const openEdit = (e) => { setSelected(e); setModalOpen(true); };
 
   return (
     <div className="page fade-in">

@@ -4,16 +4,16 @@ import Avatar from '../ui/Avatar.jsx';
 import { useAuth } from '../../hooks/useAuth.jsx';
 
 const PAGE_TITLES = {
-  dashboard:   'Dashboard',
-  employees:   'Employees',
-  attendance:  'Attendance',
-  leave:       'Leave Management',
-  payroll:     'Payroll',
+  dashboard: 'Dashboard',
+  employees: 'Employees',
+  attendance: 'Attendance',
+  leave: 'Leave Management',
+  payroll: 'Payroll',
   performance: 'Performance Reviews',
-  roles:       'Roles & Permissions',
+  roles: 'Roles & Permissions',
 };
 
-export default function Header({ currentPage, onMenuToggle }) {
+export default function Header({ currentPage, onMenuToggle, onNavigate }) {
   const { user } = useAuth();
 
   return (
@@ -35,15 +35,25 @@ export default function Header({ currentPage, onMenuToggle }) {
 
       <div className="header-search">
         <Icon name="search" size={14} style={{ color: 'var(--ink-light)', flexShrink: 0 }} />
-        <input placeholder="Search anything…" aria-label="Global search" />
+        <input
+          placeholder="Search anything…"
+          aria-label="Global search"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && e.target.value.trim()) {
+              window.__globalSearch = e.target.value.trim();
+              onNavigate('employees');
+              e.target.value = '';
+            }
+          }}
+        />
       </div>
 
       <div className="header-actions">
-        <button className="icon-btn" aria-label="Notifications">
+        {/* <button className="icon-btn" aria-label="Notifications">
           <Icon name="bell" size={16} />
           <span className="notif-dot" />
-        </button>
-        <button className="icon-btn" aria-label="Settings">
+        </button> */}
+        <button className="icon-btn" aria-label="Settings" onClick={() => onNavigate('settings')}>
           <Icon name="settings" size={16} />
         </button>
         <Avatar firstName={user?.first_name} lastName={user?.last_name} />

@@ -20,28 +20,22 @@ const qs = (params) => {
   return new URLSearchParams(p).toString();
 };
 
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
+const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
+
 export const reportsApi = {
-  // GET /reports/headcount?date_from=&date_to=
-  headcount: (params) => get(`/reports/headcount?${qs(params)}`),
-
-  // GET /reports/attendance?date_from=&date_to=&group_by=day|week|month
-  attendance: (params) => get(`/reports/attendance?${qs(params)}`),
-
-  // GET /reports/leave?date_from=&date_to=
-  leave: (params) => get(`/reports/leave?${qs(params)}`),
-
-  // GET /reports/payroll?date_from=&date_to=
-  payroll: (params) => get(`/reports/payroll?${qs(params)}`),
-
-  // GET /reports/performance?date_from=&date_to=
-  performance: (params) => get(`/reports/performance?${qs(params)}`),
+  headcount: async (p) => { if (USE_MOCK) { await delay(); return { data: MOCK_REPORTS.headcount }; } return get(`/reports/headcount?${qs(p)}`); },
+  attendance: async (p) => { if (USE_MOCK) { await delay(); return { data: MOCK_REPORTS.attendance }; } return get(`/reports/attendance?${qs(p)}`); },
+  leave: async (p) => { if (USE_MOCK) { await delay(); return { data: MOCK_REPORTS.leave }; } return get(`/reports/leave?${qs(p)}`); },
+  payroll: async (p) => { if (USE_MOCK) { await delay(); return { data: MOCK_REPORTS.payroll }; } return get(`/reports/payroll?${qs(p)}`); },
+  performance: async (p) => { if (USE_MOCK) { await delay(); return { data: MOCK_REPORTS.performance }; } return get(`/reports/performance?${qs(p)}`); },
 };
 
 // ── Mock data (used when VITE_USE_MOCK=true) ──────────────────────────
 
 const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const DEPTS  = ['Engineering','Design','Marketing','Operations','Finance'];
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const DEPTS = ['Engineering', 'Design', 'Marketing', 'Operations', 'Finance'];
 
 export const MOCK_REPORTS = {
   headcount: {
@@ -52,8 +46,8 @@ export const MOCK_REPORTS = {
       new_hires: rand(0, 3),
     })),
     by_status: [
-      { status: 'active',   count: 138 },
-      { status: 'inactive', count: 4   },
+      { status: 'active', count: 138 },
+      { status: 'inactive', count: 4 },
     ],
     trend: MONTHS.map((month, i) => ({
       month, total: 110 + i * 3 + rand(-1, 2),
@@ -64,17 +58,17 @@ export const MOCK_REPORTS = {
     summary: { avg_attendance_pct: 84, avg_hours_per_day: 7.6, total_check_ins: 2840, total_absences: 312 },
     trend: MONTHS.map((month, i) => ({
       month,
-      present:   rand(110, 130),
-      absent:    rand(10, 30),
-      late:      rand(5, 15),
+      present: rand(110, 130),
+      absent: rand(10, 30),
+      late: rand(5, 15),
       avg_hours: (7 + Math.random()).toFixed(1),
     })),
     by_department: DEPTS.map((name) => ({
       name,
-      avg_pct:   rand(75, 95),
+      avg_pct: rand(75, 95),
       avg_hours: (7 + Math.random()).toFixed(1),
     })),
-    by_day_of_week: ['Mon','Tue','Wed','Thu','Fri'].map((day) => ({
+    by_day_of_week: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((day) => ({
       day, avg_present: rand(100, 130),
     })),
   },
@@ -89,11 +83,11 @@ export const MOCK_REPORTS = {
       avg_days: rand(2, 6),
     })),
     by_type: [
-      { type: 'Annual Leave',   count: 42, days: 168 },
-      { type: 'Sick Leave',     count: 21, days: 52  },
-      { type: 'Personal',       count: 14, days: 38  },
-      { type: 'Medical',        count: 6,  days: 18  },
-      { type: 'Other',          count: 4,  days: 8   },
+      { type: 'Annual Leave', count: 42, days: 168 },
+      { type: 'Sick Leave', count: 21, days: 52 },
+      { type: 'Personal', count: 14, days: 38 },
+      { type: 'Medical', count: 6, days: 18 },
+      { type: 'Other', count: 4, days: 8 },
     ],
     trend: MONTHS.map((month) => ({
       month, requests: rand(4, 12), days: rand(10, 40),
@@ -102,48 +96,48 @@ export const MOCK_REPORTS = {
 
   payroll: {
     summary: {
-      total_gross:      2840500,
-      total_net:        2414425,
-      total_deductions: 426075,
-      total_bonuses:    142000,
-      avg_salary:       20003,
-      headcount:        142,
+      total_gross: 18430000,
+      total_net: 17048000,
+      total_deductions: 1382000,
+      total_bonuses: 975000,
+      avg_salary: 418000,
+      headcount: 44,
     },
     by_department: DEPTS.map((name, i) => ({
       name,
       total_gross: [920000, 380000, 440000, 620000, 480000][i],
-      headcount:   [45, 18, 22, 31, 26][i],
-      avg_salary:  [20444, 21111, 20000, 20000, 18461][i],
+      headcount: [45, 18, 22, 31, 26][i],
+      avg_salary: [20444, 21111, 20000, 20000, 18461][i],
     })),
     trend: MONTHS.map((month, i) => ({
       month,
-      gross:      240000 + i * 3000 + rand(-5000, 5000),
-      net:        200000 + i * 2500 + rand(-4000, 4000),
-      bonuses:    rand(5000, 20000),
+      gross: 240000 + i * 3000 + rand(-5000, 5000),
+      net: 200000 + i * 2500 + rand(-4000, 4000),
+      bonuses: rand(5000, 20000),
     })),
     salary_bands: [
-      { band: '$0–40k',   count: 12 },
-      { band: '$40–60k',  count: 38 },
-      { band: '$60–80k',  count: 51 },
-      { band: '$80–100k', count: 28 },
-      { band: '$100k+',   count: 13 },
+      { band: '₦0–100k', count: 12 },
+      { band: '₦100–300k', count: 38 },
+      { band: '₦300–500k', count: 51 },
+      { band: '₦500k–1M', count: 28 },
+      { band: '₦1M+', count: 13 },
     ],
   },
 
   performance: {
     summary: { avg_rating: 4.1, reviews_completed: 134, top_performers: 48, needs_attention: 18, completion_pct: 94 },
     distribution: [
-      { rating: 5, count: 28, label: 'Exceptional'    },
-      { rating: 4, count: 62, label: 'Strong'         },
-      { rating: 3, count: 26, label: 'Meeting'        },
-      { rating: 2, count: 12, label: 'Developing'     },
-      { rating: 1, count: 6,  label: 'Needs Support'  },
+      { rating: 5, count: 28, label: 'Exceptional' },
+      { rating: 4, count: 62, label: 'Strong' },
+      { rating: 3, count: 26, label: 'Meeting' },
+      { rating: 2, count: 12, label: 'Developing' },
+      { rating: 1, count: 6, label: 'Needs Support' },
     ],
     by_department: DEPTS.map((name) => ({
       name,
-      avg_rating:    (3.5 + Math.random()).toFixed(1),
-      reviewed:      rand(10, 40),
-      top_pct:       rand(25, 55),
+      avg_rating: (3.5 + Math.random()).toFixed(1),
+      reviewed: rand(10, 40),
+      top_pct: rand(25, 55),
     })),
     trend: MONTHS.slice(0, 4).map((month) => ({
       month, avg_rating: (3.8 + Math.random() * 0.5).toFixed(2),

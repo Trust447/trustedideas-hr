@@ -17,6 +17,7 @@ import PayrollPage      from './pages/payroll/PayrollPage.jsx';
 import PerformancePage  from './pages/performance/PerformancePage.jsx';
 import RolesPage        from './pages/roles/RolesPage.jsx';
 import ReportsPage      from './pages/reports/ReportsPage.jsx';
+import SettingsPage from './pages/settings/SettingsPage.jsx';
 
 const PAGES = {
   dashboard:   DashboardPage,
@@ -27,6 +28,7 @@ const PAGES = {
   performance: PerformancePage,
   roles:       RolesPage,
   reports:     ReportsPage,
+  settings:    SettingsPage,
 };
 
 function AuthedApp() {
